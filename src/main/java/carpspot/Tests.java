@@ -10,14 +10,14 @@ import org.testng.annotations.Test;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by user on 04.03.2017.
+ * Created by andrii kolomakin on 04.03.2017.
  * address: http://carpspot.ua/shop/carp/user/login/
  * login: kolomakin@gmail.com
  * pass: 123456qwe
  */
 public class Tests {
-    WebDriver driver = new ChromeDriver();
-    String price;
+    private final WebDriver driver = new ChromeDriver();
+    private String price;
 
     @BeforeSuite
     public void setUp(){
@@ -28,13 +28,15 @@ public class Tests {
     @AfterSuite
     public void tearDown() throws InterruptedException {
         synchronized (driver){
-            driver.wait(5000);
+            driver.wait(10000);
         }
-        //driver.quit();
+        System.out.println("Testing complete. Seems that everything went fine.");
+        System.out.println("Item's price is " + price);
+        driver.quit();
     }
 
     @Test(priority = 1)
-    public void logInTest(){
+    public void testLogIn(){
         carpspot.login.Methods loginM = new carpspot.login.Methods(driver);
         carpspot.login.Locators loginL = new carpspot.login.Locators();
 
@@ -57,7 +59,7 @@ public class Tests {
     }
 
     @Test(priority = 2)
-    public void findAGoodAndAddToCart(){
+    public void testCatalog(){
         carpspot.catalog.Methods catalogM = new carpspot.catalog.Methods(driver);
         carpspot.catalog.Locators catalogL = new carpspot.catalog.Locators();
 
@@ -66,20 +68,29 @@ public class Tests {
         catalogM.selectSnastiSection(catalogL.snastiSection,catalogL.udilischaSection);
         catalogM.selectAparticularRod(catalogL.rod);
         price=catalogM.savePrice(catalogL.price);
-        System.out.println(price);
         catalogM.toCart(catalogL.toCart);
-        Assert.assertTrue(catalogM.findElement(catalogL.cart).isDisplayed(), "Error: The cart is not displayed");
+        Assert.assertTrue(catalogM.findElement(catalogL.cart).isDisplayed(),
+                "Error: The cart is not displayed");
         Assert.assertTrue(catalogM.findElement(catalogL.rodInCart).getText().
-                equalsIgnoreCase("Rod Hutchinson Enduro Spod 12\""), "Error: required rod is not in the cart");
+                equalsIgnoreCase("Rod Hutchinson Enduro Spod 12\""),
+                "Error: required rod is not in the cart");
     }
 
     @Test(priority = 3)
-    public void checkoutCart(){
+    public void testCart(){
         carpspot.cart.Methods cartM = new carpspot.cart.Methods(driver);
         carpspot.cart.Locators cartL = new carpspot.cart.Locators();
 
         Assert.assertTrue(cartM.findElement(cartL.openCart).isDisplayed(),
                 "Error: Open cart button is not displayed");
         cartM.checkCart(cartL.openCart);
+        Assert.assertTrue(cartM.findElement(cartL.cartContent).isDisplayed(),
+                "Error: the cart has not been displayed");
+        Assert.assertTrue(cartM.findElement(cartL.price).getText().equalsIgnoreCase(price),
+                "Error: individual item's price in the cart does not match the price in the catalog");
+        cartM.checkOut(cartL.checkOut);
+        Assert.assertTrue(cartM.findElement(cartL.submit).isDisplayed(),
+                "Error: something went wrong and submit button is not displayed");
+
     }
 }

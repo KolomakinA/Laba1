@@ -7,13 +7,11 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
 /**
- * Created by user on 04.03.2017.
+ * Created by andrii kolomakin on 04.03.2017.
  */
-public class Methods {
-    WebDriver driver;
+public class Methods{
+    private WebDriver driver;
     public Methods (WebDriver driver){this.driver=driver;}
-
-    //-------------
     public WebElement findElement(String s){return  driver.findElement(By.xpath(s));}
 
     public void selectSnastiSection(String selecorSnasti, String selecorUdilischa){

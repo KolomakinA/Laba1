@@ -1,7 +1,7 @@
 package carpspot.catalog;
 
 /**
- * Created by user on 04.03.2017.
+ * Created by andrii kolomakin on 04.03.2017.
  */
 public class Locators {
     public String snastiSection = "//div[@class='block_category']/ul/li/a";
